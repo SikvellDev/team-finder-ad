@@ -1,15 +1,17 @@
+import os
 from pathlib import Path
+
 from decouple import config
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+AUTH_USER_MODEL = 'users.User'
 
-# TODO: Создать и заполнить .env, ориентируясь на .env_example
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -21,6 +23,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "users.apps.UsersConfig",
+    "projects.apps.ProjectsConfig",
 ]
 
 MIDDLEWARE = [
@@ -35,10 +39,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "team_finder.urls"
 
+DIRS = [BASE_DIR / "templates_var2"]
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / f"templates_var{config('TASK_VERSION', default='1')}"],
+        "DIRS": DIRS,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -71,21 +77,27 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
+VAL_1 = ("django.contrib.auth.password_validation." +
+         "UserAttributeSimilarityValidator")
+VAL_2 = "django.contrib.auth.password_validation.MinimumLengthValidator"
+VAL_3 = "django.contrib.auth.password_validation.CommonPasswordValidator"
+VAL_4 = "django.contrib.auth.password_validation.NumericPasswordValidator"
+
 AUTH_PASSWORD_VALIDATORS = []
 if not DEBUG:
     AUTH_PASSWORD_VALIDATORS.extend(
         [
             {
-                "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+                "NAME": VAL_1,
             },
             {
-                "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+                "NAME": VAL_2,
             },
             {
-                "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+                "NAME": VAL_3,
             },
             {
-                "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+                "NAME": VAL_4,
             },
         ]
     )
@@ -93,7 +105,7 @@ if not DEBUG:
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-ru"
 
 TIME_ZONE = "UTC"
 
@@ -116,3 +128,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'projects:project_list'
+LOGOUT_REDIRECT_URL = 'projects:project_list'
