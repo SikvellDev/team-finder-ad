@@ -1,13 +1,15 @@
 import re
 
 from django import forms
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from core.mixins import GitHubURLMixin
 from users.constants import ABOUT_ROWS, PASSWORD_MIN_LENGTH
-from users.models import User
-from validators import validate_github_url
+
+User = get_user_model()
 
 
 class RegistrationForm(forms.ModelForm):
@@ -90,7 +92,7 @@ class LoginForm(forms.Form):
     )
 
 
-class ProfileEditForm(forms.ModelForm):
+class ProfileEditForm(GitHubURLMixin, forms.ModelForm):
     """Форма редактирования профиля пользователя"""
 
     class Meta:
@@ -136,7 +138,7 @@ class ProfileEditForm(forms.ModelForm):
         if not phone:
             return phone
 
-        phone = re.sub(r'[\s\-\(\)]', '', phone)
+        phone = re.sub(r'[\s\-\(\)\.]', '', phone)
 
         pattern_8 = r'^8\d{10}$'
         pattern_7 = r'^\+7\d{10}$'
@@ -161,11 +163,6 @@ class ProfileEditForm(forms.ModelForm):
             raise ValidationError(text)
 
         return phone
-
-    def clean_github_url(self):
-        """Валидация GitHub URL"""
-        github_url = self.cleaned_data.get('github_url')
-        return validate_github_url(github_url)
 
     def clean_avatar(self):
         """Валидация аватара"""
@@ -195,7 +192,7 @@ class ProfileEditForm(forms.ModelForm):
 
 
 class PasswordChangeForm(PasswordChangeForm):
-    """Кастомная форма смены пароля с Bootstrap стилями"""
+    """Форма смены пароля"""
 
     old_password = forms.CharField(
         label='Старый пароль',

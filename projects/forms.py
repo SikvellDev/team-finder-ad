@@ -1,10 +1,10 @@
 from django import forms
 
+from core.mixins import GitHubURLMixin
 from projects.models import Project
-from validators import validate_github_url
 
 
-class ProjectForm(forms.ModelForm):
+class ProjectForm(GitHubURLMixin, forms.ModelForm):
     """Форма создания и редактирования проекта"""
 
     class Meta:
@@ -39,8 +39,3 @@ class ProjectForm(forms.ModelForm):
                 'max_length': 'Название не может быть длиннее 200 символов',
             },
         }
-
-    def clean_github_url(self):
-        """Валидация GitHub URL"""
-        github_url = self.cleaned_data.get('github_url')
-        return validate_github_url(github_url)

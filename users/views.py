@@ -1,17 +1,17 @@
 import json
 from http import HTTPStatus
 
-from django.contrib.auth import (authenticate, login, logout,
-                                 update_session_auth_hash)
+from django.contrib.auth import authenticate, login, logout, \
+    update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
-from service import paginate_queryset
+from core.service import paginate_queryset
 from users.constants import AUTOCOMPLETE_LIMIT
-from users.forms import (LoginForm, PasswordChangeForm, ProfileEditForm,
-                         RegistrationForm)
+from users.forms import LoginForm, PasswordChangeForm, ProfileEditForm, \
+    RegistrationForm
 from users.models import Skill, User
 
 
@@ -42,8 +42,8 @@ def login_view(request):
         if user is not None:
             login(request, user)
             return redirect('projects:project_list')
-        else:
-            form.add_error(None, 'Неверный имейл или пароль')
+
+        form.add_error(None, 'Неверный имейл или пароль')
 
     return render(request, 'users/login.html', {'form': form})
 

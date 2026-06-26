@@ -82,4 +82,3 @@ class Project(models.Model):
         if not user or not user.is_authenticated:
             return False
         return self.participants.filter(id=user.id).exists()
-    

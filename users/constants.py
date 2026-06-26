@@ -12,6 +12,10 @@ PHONE_MAX_LENGTH = 12
 
 AVATAR_SIZE = 200
 
+FONT_BASE_PATH_LINUX = '/usr/share/fonts/truetype/'
+FONT_BASE_PATH_WINDOWS = 'C:/Windows/Fonts/'
+FONT_BASE_PATH_MAC = '/System/Library/Fonts/'
+
 COLOR_LIGHT_BLUE = (52, 152, 219)
 COLOR_GREEN = (46, 204, 113)
 COLOR_PURPLE = (155, 89, 182)
@@ -29,13 +33,13 @@ COLORS = [COLOR_BLUE, COLOR_CARROT, COLOR_DARK_BLUE, COLOR_EMERALD,
 
 FONT_PATHS = [
     # Linux
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+    FONT_BASE_PATH_LINUX + 'dejavu/DejaVuSans.ttf',
+    FONT_BASE_PATH_LINUX + 'liberation/LiberationSans-Regular.ttf',
     # Windows
-    'C:/Windows/Fonts/arial.ttf',
-    'C:/Windows/Fonts/segoeui.ttf',
+    FONT_BASE_PATH_WINDOWS + 'arial.ttf',
+    FONT_BASE_PATH_WINDOWS + 'segoeui.ttf',
     # Mac
-    '/System/Library/Fonts/Helvetica.ttc',
+    FONT_BASE_PATH_MAC + 'Helvetica.ttc',
 ]
 
 AUTOCOMPLETE_LIMIT = 10

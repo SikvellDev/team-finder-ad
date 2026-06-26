@@ -5,10 +5,10 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
+from core.service import paginate_queryset
 from projects.constants import CLOSED_PROJECT, OPEN_PROJECT
 from projects.forms import ProjectForm
 from projects.models import Project
-from service import paginate_queryset
 
 
 @require_http_methods(['GET'])
@@ -31,7 +31,10 @@ def project_list_view(request):
 @require_http_methods(['GET'])
 def project_detail_view(request, project_id):
     """Страница детального просмотра проекта"""
-    project = get_object_or_404(Project, id=project_id)
+    project = get_object_or_404(
+        Project.objects.prefetch_related('participants'),
+        id=project_id
+    )
 
     context = {
         'project': project,
@@ -127,6 +130,15 @@ def toggle_participate_view(request, project_id):
             {
                 "status": "error",
                 "message": "Вы не можете участвовать в своём проекте"
+            },
+            status=HTTPStatus.BAD_REQUEST
+        )
+
+    if project.status != OPEN_PROJECT:
+        return JsonResponse(
+            {
+                "status": "error",
+                "message": "Проект закрыт для новых участников"
             },
             status=HTTPStatus.BAD_REQUEST
         )

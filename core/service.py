@@ -7,8 +7,6 @@ from projects.constants import OBJECTS_NUMBER_ON_PAGE
 def paginate_queryset(queryset,
                       request: HttpRequest,
                       per_page: int = OBJECTS_NUMBER_ON_PAGE):
-    """Функция для пагинации QuerySet"""
-
     paginator = Paginator(queryset, per_page)
     page = request.GET.get('page', 1)
 
